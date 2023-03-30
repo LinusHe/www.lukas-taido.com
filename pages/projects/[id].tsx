@@ -15,8 +15,8 @@ export default function ProjectPage({ project }: Props) {
       <SlateContent content={content} />
       {images && !!images.length && (
         <MediaGrid>
-          {images.map(({ image, caption }) => (
-            <div>
+          {images.map(({ image, caption }, index) => (
+            <div key={index}>
               <img src={CMS_URL + (image.sizes.tablet.url || image.url)} />
               {caption && <div className="caption">{caption}</div>}
             </div>

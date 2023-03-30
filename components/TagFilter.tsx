@@ -12,8 +12,9 @@ const TagFilter: React.FC<Props> = (props) => {
   const { tags, active, onSelectTag, ...rest } = props;
   return (
     <Wrapper {...rest}>
-      {tags.map((tag) => (
+      {tags.map((tag, index) => (
         <div
+          key={index}
           onClick={() => onSelectTag(tag)}
           className={active.id === tag.id ? "active" : ""}
         >

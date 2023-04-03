@@ -54,6 +54,10 @@ const Wrapper = styled.div`
   flex-direction: column;
   gap: 2.5vw;
   padding-bottom: 2.5vw;
+  padding-top: 12px;
+  @media only screen and (min-width: 551px) {
+    padding-top: 0;
+  }
 `;
 const Filter = styled(TagFilter)`
   ${contentPadding("m")}

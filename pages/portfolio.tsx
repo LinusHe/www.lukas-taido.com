@@ -66,7 +66,7 @@ const Grid = styled(FlipMove)`
   transition: all ease-in-out 0.25s;
   grid-template-columns: 1fr 1fr;
   @media only screen and (min-width: 551px) {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
 `;
 const Teaser = styled.div`

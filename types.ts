@@ -49,6 +49,10 @@ export interface Project {
   tags: Tag[];
   content: any;
   priority: number;
+  videos: {
+    vimeoUrl: string;
+    caption?: string;
+  }[];
   images: {
     image: CMSImage;
     caption: string;

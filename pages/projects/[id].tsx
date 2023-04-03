@@ -21,7 +21,7 @@ export default function ProjectPage({ project }: Props) {
             const embedUrl = `https://player.vimeo.com/video/${videoId}`;
 
             return (
-              <VideoContainer>
+              <VideoContainer key={"video-" + videoId}>
                 <IFrameWrapper>
                   <iframe
                     src={embedUrl}
@@ -36,7 +36,7 @@ export default function ProjectPage({ project }: Props) {
             );
           })}
           {images?.map(({ image, caption }, index) => (
-            <div key={index}>
+            <div key={"image-" + (index + 1)}>
               <img src={CMS_URL + (image.sizes.tablet.url || image.url)} />
               {caption && <Caption>{caption}</Caption>}
             </div>

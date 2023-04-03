@@ -4,6 +4,15 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cms.lukas-taido.com",
+        pathname: "/media/**",
+      },
+    ],
+  },
 };
 
 module.exports = nextConfig;

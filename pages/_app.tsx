@@ -1,16 +1,18 @@
 import type { AppProps } from "next/app";
-import { Inter, Source_Sans_Pro } from "next/font/google";
+import { Source_Sans_Pro } from "next/font/google";
 import Head from "next/head";
 import styled from "styled-components";
 import MainNav from "../components/MainNav";
 import { GlobalStyles } from "../styles/GlobalStyles";
 
-const inter = Inter({
+const inter = Source_Sans_Pro({
+  weight: ["200", "400", "700"],
   subsets: ["latin"],
 });
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps, router }: AppProps) {
+  const isNotLandingPage = router.route !== "/";
   return (
-    <Main className={inter.className}>
+    <Main className={inter.className} applyPadding={isNotLandingPage}>
       <Head>
         <title>waveshaper</title>
         <meta name="description" content="Lukas Taido" />
@@ -18,14 +20,14 @@ export default function App({ Component, pageProps }: AppProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <GlobalStyles />
-      <MainNav />
+      {isNotLandingPage && <MainNav />}
       <Component {...pageProps} />
     </Main>
   );
 }
 
-const Main = styled.main`
+const Main = styled.main<{ applyPadding: boolean }>`
   min-height: 100vh;
   width: 100%;
-  padding: 0 clamp(12px, 3.5vw, 40px) 20px;
+  background-color: #2f3334;
 `;

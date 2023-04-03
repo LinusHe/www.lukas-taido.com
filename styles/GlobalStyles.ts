@@ -5,7 +5,7 @@ export const GlobalStyles = createGlobalStyle`
   box-sizing:border-box;
 }
 html{
-  background-color: #2f3334;
+  background-color: black;
   font-family: 'Source Sans Pro', sans-serif;
   font-family: monospace;
   font-weight:200;

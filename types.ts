@@ -60,7 +60,10 @@ export interface Project {
 export interface Global {
   createdAt: string;
   updatedAt: string;
-  activeTags: Tag[];
+  portfolio: {
+    activeTags: Tag[];
+    defaultTag?: Tag;
+  };
 }
 export interface CVItem {
   title: string;

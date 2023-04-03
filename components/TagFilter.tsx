@@ -1,5 +1,6 @@
 import { HTMLAttributes } from "react";
 import styled from "styled-components";
+import { contentPadding } from "../styles/contentPadding";
 import { Tag } from "../types";
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
@@ -29,7 +30,7 @@ export default TagFilter;
 
 const Wrapper = styled.div`
   display: flex;
-  gap: 20px;
+  column-gap: 20px;
   font-size: 16px;
   flex-wrap: wrap;
   > div {

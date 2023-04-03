@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import SlateContent from "../components/SlateContent";
+import { contentPadding } from "../styles/contentPadding";
 
 interface Props {
   contact: any;
@@ -9,6 +10,7 @@ export default function ContactPage({ contact }: Props) {
 }
 const Wrapper = styled(SlateContent)`
   color: white;
+  ${contentPadding("m")}
 `;
 const CMS_URL = process.env.NEXT_PUBLIC_CMS_URL;
 

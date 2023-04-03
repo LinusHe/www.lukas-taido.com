@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { Fragment } from "react";
 import styled from "styled-components";
 import SlateContent from "../components/SlateContent";
+import { contentPadding } from "../styles/contentPadding";
 import { CVItem } from "../types";
 
 interface Props {
@@ -38,6 +40,11 @@ export default function CVPage({ cv }: Props) {
 }
 const Wrapper = styled.div`
   color: white;
+  ${contentPadding("m")}
+  padding-top:40px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
 `;
 const FullHeight = styled.div`
   position: relative;
@@ -45,6 +52,10 @@ const FullHeight = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding-top: 38px;
+  h2 {
+    font-weight: 400;
+  }
 `;
 const Header = styled.div`
   font-size: 18px;

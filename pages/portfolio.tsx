@@ -1,10 +1,10 @@
 import { NextPage } from "next";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useState } from "react";
+import FlipMove from "react-flip-move";
 import styled from "styled-components";
-import MainNav from "../components/MainNav";
 import TagFilter from "../components/TagFilter";
+import { contentPadding } from "../styles/contentPadding";
 import type { Global, Project } from "../types";
 
 const CMS_URL = process.env.NEXT_PUBLIC_CMS_URL;
@@ -15,23 +15,31 @@ interface Props {
 }
 
 const PortfolioPage: NextPage<Props> = ({ projectsByTag, global }) => {
-  const [tag, setTag] = useState(global.activeTags[0]);
-  const { route } = useRouter();
+  const [tag, setTag] = useState(
+    global.portfolio.defaultTag || global.portfolio.activeTags[0]
+  );
 
   return (
     <Wrapper>
-      <TagFilter tags={global.activeTags} active={tag} onSelectTag={setTag} />
+      <Filter
+        tags={global.portfolio.activeTags}
+        active={tag}
+        onSelectTag={setTag}
+      />
+
       <Grid>
         {projectsByTag[tag.id].map((project) => (
           <Link key={project.id} href={"/projects/" + project.id}>
-            <Teaser
-              imageUrl={
-                CMS_URL +
-                (project.teaserImage?.sizes.thumbnail.url ||
-                  project.teaserImage?.url!)
-              }
-            >
-              <div>{project.title}</div>
+            <Teaser>
+              <Background
+                className="background"
+                imageUrl={
+                  CMS_URL +
+                  (project.teaserImage?.sizes.thumbnail.url ||
+                    project.teaserImage?.url!)
+                }
+              />
+              <div className="foreground">{project.title}</div>
             </Teaser>
           </Link>
         ))}
@@ -44,26 +52,31 @@ export default PortfolioPage;
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 2.5vw;
+  padding-bottom: 2.5vw;
 `;
-const Grid = styled.div`
+const Filter = styled(TagFilter)`
+  ${contentPadding("m")}
+`;
+
+const Grid = styled(FlipMove)`
   display: grid;
-  gap: clamp(12px, 2.5vw, 40px);
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(200px, 1fr)
-  ); /* Minimum width of 200px, maximum width of 1fr */
+  gap: clamp(12px, 2.5vw, 24px);
+  ${contentPadding("s")};
+  transition: all ease-in-out 0.25s;
+  grid-template-columns: 1fr 1fr;
+  @media only screen and (min-width: 551px) {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
 `;
-const Teaser = styled.div<{ imageUrl: string }>`
-  background-image: url(${({ imageUrl }) => imageUrl});
-  background-size: cover;
-  background-position: center;
-  background-repeat: none;
-  padding-top: 56.66%;
+const Teaser = styled.div`
   position: relative;
   outline: 1px solid grey;
   cursor: pointer;
-  > div {
+  overflow: hidden;
+  padding-top: 56.66%;
+
+  > .foreground {
     color: white;
     position: absolute;
     font-size: 0.9em;
@@ -76,9 +89,26 @@ const Teaser = styled.div<{ imageUrl: string }>`
     transition: opacity 0.5s;
     background-color: rgba(0, 0, 0, 0.5);
   }
-  :hover > div {
-    opacity: 1;
+  :hover {
+    > .background {
+      transform: scale(1.25);
+    }
+    > .foreground {
+      opacity: 1;
+    }
   }
+`;
+const Background = styled.div<{ imageUrl: string }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url(${({ imageUrl }) => imageUrl});
+  background-size: cover;
+  background-position: center;
+  background-repeat: none;
+  transition: transform 1s;
 `;
 export async function getServerSideProps() {
   const fetchProjects = async () => {

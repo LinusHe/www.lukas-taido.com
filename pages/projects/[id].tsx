@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Project } from "../../types";
 import { GetServerSidePropsContext } from "next";
 import SlateContent from "../../components/SlateContent";
+import { contentPadding } from "../../styles/contentPadding";
 
 interface Props {
   project: Project;
@@ -30,20 +31,25 @@ export default function ProjectPage({ project }: Props) {
 const Wrapper = styled.div`
   min-height: 100%;
   color: white;
+  ${contentPadding("m")}
+  padding-bottom: 2.5vw;
 `;
 const ProjectTitle = styled.h1`
   font-size: 1.5em;
   line-height: 1.2em;
+  margin-top: 20px;
   margin-bottom: 20px;
-  font-weight: 200;
+  font-weight: 200; ;
 `;
 const MediaGrid = styled.div`
   display: grid;
   max-width: 100%;
-  gap: 8px;
+  gap: 4vw;
   grid-template-columns: 1fr;
   img {
+    width: 100%;
     max-width: 100%;
+    outline: 1px solid grey;
   }
   > div {
     .caption {

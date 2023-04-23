@@ -16,12 +16,13 @@ const ImageSlider: React.FC<ImageSliderProps> = (props) => {
 
   useEffect(() => {
     if (isLoading) return;
+    let intervalId: NodeJS.Timeout;
     const changeImage = () => {
-      setTimeout(() => {
+      intervalId = setTimeout(() => {
         setCurrentImageIndex((currentImageIndex + 1) % images.length);
       }, duration);
     };
-    const intervalId = setInterval(changeImage, duration + transitionDuration);
+    changeImage();
     return () => {
       if (intervalId) clearInterval(intervalId);
     };

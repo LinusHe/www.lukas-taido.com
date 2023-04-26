@@ -24,6 +24,20 @@ const Wrapper = styled.div`
     content: "-";
     margin-right: 0.5em;
   }
+  h1 {
+    font-size: 1.5em;
+    line-height: 1.2em;
+    margin-top: 20px;
+    margin-bottom: 32px;
+    font-weight: 200;
+  }
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 400;
+  }
 `;
 
 interface Props extends HTMLAttributes<HTMLDivElement> {

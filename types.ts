@@ -46,7 +46,7 @@ export interface Project {
   title: string;
   date: string;
   teaserImage?: CMSImage;
-  tags: Tag[];
+  tags?: Tag[];
   content: any;
   priority: number;
   videos: {
@@ -65,9 +65,12 @@ export interface Global {
   createdAt: string;
   updatedAt: string;
   portfolio: {
-    activeTags: Tag[];
+    activeTags?: Tag[];
     defaultTag?: Tag;
   };
+  introGallery?: {
+    image: CMSImage;
+  }[];
 }
 export interface CVItem {
   title: string;

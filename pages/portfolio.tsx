@@ -11,14 +11,19 @@ const CMS_URL = process.env.NEXT_PUBLIC_CMS_URL;
 
 interface Props {
   projectsByTag: Record<string, Project[]>;
+  allProjects: Project[];
   global: Global;
 }
 
-const PortfolioPage: NextPage<Props> = ({ projectsByTag, global }) => {
+const PortfolioPage: NextPage<Props> = ({
+  projectsByTag,
+  allProjects,
+  global,
+}) => {
   const [tag, setTag] = useState(
-    global.portfolio.defaultTag || global.portfolio.activeTags[0]
+    global.portfolio.defaultTag || global.portfolio.activeTags?.[0]
   );
-
+  const projects = tag ? projectsByTag[tag.id] : allProjects;
   return (
     <Wrapper>
       <Filter
@@ -28,7 +33,7 @@ const PortfolioPage: NextPage<Props> = ({ projectsByTag, global }) => {
       />
 
       <Grid>
-        {projectsByTag[tag.id].map((project) => (
+        {projects.map((project) => (
           <Link key={project.id} href={"/projects/" + project.id}>
             <Teaser>
               <Background
@@ -131,7 +136,7 @@ export async function getServerSideProps() {
   ]);
 
   const projectsByTag = (projects.docs as Project[]).reduce((acc, project) => {
-    project.tags.forEach((tag) => {
+    project.tags?.forEach((tag) => {
       if (!acc[tag.id]) {
         acc[tag.id] = [];
       }
@@ -142,6 +147,7 @@ export async function getServerSideProps() {
   return {
     props: {
       projectsByTag,
+      allProjects: projects.docs,
       global,
     }, // will be passed to the page component as props
   };

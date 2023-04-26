@@ -4,20 +4,21 @@ import { contentPadding } from "../styles/contentPadding";
 import { Tag } from "../types";
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
-  active: Tag;
-  tags: Tag[];
+  active?: Tag;
+  tags?: Tag[];
   onSelectTag: (tag: Tag) => void;
 }
 
 const TagFilter: React.FC<Props> = (props) => {
   const { tags, active, onSelectTag, ...rest } = props;
+  if (!tags) return null;
   return (
     <Wrapper {...rest}>
       {tags.map((tag, index) => (
         <div
           key={index}
           onClick={() => onSelectTag(tag)}
-          className={active.id === tag.id ? "active" : ""}
+          className={active?.id === tag.id ? "active" : ""}
         >
           {tag.label}
         </div>

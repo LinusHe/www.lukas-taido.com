@@ -27,14 +27,14 @@ const Wrapper = styled.div`
 `;
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
-  content: any;
+  content?: any[];
   collapsible?: boolean;
   defaultOpen?: boolean;
 }
 
 const SlateContent: React.FC<Props> = (props) => {
   const {
-    content,
+    content = [],
     collapsible,
     defaultOpen: defaultCollapsed,
     children,
@@ -43,16 +43,16 @@ const SlateContent: React.FC<Props> = (props) => {
   const [open, setOpen] = useState(props.defaultOpen || false);
 
   const shouldCollapse =
-    (collapsible && content.length > 2) || content[0].children.length > 3;
+    (collapsible && content.length > 2) ||
+    (content[0] ? content[0].children.length > 3 : false);
 
-  const collapsedContent = useMemo(
-    () =>
-      content.length > 2
-        ? content.slice(0, 2)
-        : content[0].children.slice(0, 3),
-    [content]
-  );
+  const collapsedContent = useMemo(() => {
+    if (!content?.length) return undefined;
+    if (content.length > 2) return content.slice(0, 2);
+    else return content[0].children.slice(0, 3);
+  }, [content]);
 
+  if (!content?.length) return null;
   return (
     <Wrapper {...rest}>
       <Content

@@ -1,19 +1,19 @@
 import styled from "styled-components";
 import Link from "next/link";
 import ImageSlider from "../components/ImageSlider";
-import { CMSImage } from "../types";
+import { CMSImage, Global } from "../types";
 interface Props {
-  introGallery: CMSImage[];
+  images: CMSImage[];
 }
 const CMS_URL = process.env.NEXT_PUBLIC_CMS_URL;
 
-export default function Home({ introGallery }: Props) {
+export default function Home({ images }: Props) {
   return (
     <>
       <Link href={"/portfolio"}>
         <Wrapper>
           <StyledImageSlider
-            images={introGallery}
+            images={images}
             duration={3000}
             transitionDuration={1000}
           />
@@ -33,14 +33,15 @@ export async function getServerSideProps() {
   // fetch global data from CMS
   const url = `${process.env.NEXT_PUBLIC_CMS_URL}/api/globals/global`;
   const res = await fetch(url);
-  const introGallery: { image: CMSImage }[] = (await res.json()).introGallery;
+  const { introGallery } = (await res.json()) as Global;
 
   return {
     props: {
-      introGallery: introGallery.map((media) => {
-        media.image.url = CMS_URL + media.image.url;
-        return media.image;
-      }),
+      images:
+        introGallery?.map((media) => {
+          media.image.url = CMS_URL + media.image.url;
+          return media.image;
+        }) || [],
     },
   };
 }

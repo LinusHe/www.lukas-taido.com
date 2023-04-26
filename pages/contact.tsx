@@ -1,16 +1,27 @@
 import styled from "styled-components";
 import SlateContent from "../components/SlateContent";
 import { contentPadding } from "../styles/contentPadding";
+import Footer from "../components/Footer";
 
 interface Props {
   contact: any;
 }
 export default function ContactPage({ contact }: Props) {
-  return <Wrapper content={contact} />;
+  return (
+    <Wrapper>
+      <SlateContent content={contact} />
+      <Footer />
+    </Wrapper>
+  );
 }
-const Wrapper = styled(SlateContent)`
+const Wrapper = styled.div`
   color: white;
   ${contentPadding("m")}
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding-bottom: 2.5vw;
 `;
 const CMS_URL = process.env.NEXT_PUBLIC_CMS_URL;
 

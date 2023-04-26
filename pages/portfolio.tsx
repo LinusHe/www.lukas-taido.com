@@ -6,6 +6,7 @@ import styled from "styled-components";
 import TagFilter from "../components/TagFilter";
 import { contentPadding } from "../styles/contentPadding";
 import type { Global, Project } from "../types";
+import Footer from "../components/Footer";
 
 const CMS_URL = process.env.NEXT_PUBLIC_CMS_URL;
 
@@ -49,6 +50,7 @@ const PortfolioPage: NextPage<Props> = ({
           </Link>
         ))}
       </Grid>
+      <Footer />
     </Wrapper>
   );
 };

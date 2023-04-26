@@ -58,7 +58,7 @@ const ProjectTitle = styled.h1`
   line-height: 1.2em;
   margin-top: 20px;
   margin-bottom: 32px;
-  font-weight: 200; ;
+  font-weight: 200;
 `;
 const VideoContainer = styled.div`
   display: grid;
@@ -68,6 +68,7 @@ const VideoContainer = styled.div`
 const Caption = styled.p`
   font-size: 16px;
   margin-top: 8px;
+  text-align: center;
 `;
 
 const IFrameWrapper = styled.div`

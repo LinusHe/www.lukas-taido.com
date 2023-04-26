@@ -20,7 +20,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <GlobalStyles />
-      {isNotLandingPage && <MainNav />}
+      {isNotLandingPage && <MainNav id="nav" />}
       <Component {...pageProps} />
     </Main>
   );
@@ -30,4 +30,9 @@ const Main = styled.main<{ applyPadding: boolean }>`
   min-height: 100vh;
   width: 100%;
   background-color: #2f3334;
+  display: flex;
+  flex-direction: column;
+  > :not(#nav) {
+    flex: 1;
+  }
 `;

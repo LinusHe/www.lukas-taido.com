@@ -7,6 +7,7 @@ import TagFilter from "../components/TagFilter";
 import { contentPadding } from "../styles/contentPadding";
 import type { Global, Project } from "../types";
 import Footer from "../components/Footer";
+import { pagePaddingBottom } from "../styles/pagePadding";
 
 const CMS_URL = process.env.NEXT_PUBLIC_CMS_URL;
 
@@ -60,7 +61,8 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2.5vw;
-  padding-bottom: 2.5vw;
+  ${pagePaddingBottom}
+
   padding-top: 12px;
   @media only screen and (min-width: 551px) {
     padding-top: 0;

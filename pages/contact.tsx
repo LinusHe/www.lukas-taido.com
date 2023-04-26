@@ -2,6 +2,7 @@ import styled from "styled-components";
 import SlateContent from "../components/SlateContent";
 import { contentPadding } from "../styles/contentPadding";
 import Footer from "../components/Footer";
+import { pagePaddingBottom } from "../styles/pagePadding";
 
 interface Props {
   contact: any;
@@ -21,7 +22,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
-  padding-bottom: 2.5vw;
+  ${pagePaddingBottom}
 `;
 const CMS_URL = process.env.NEXT_PUBLIC_CMS_URL;
 

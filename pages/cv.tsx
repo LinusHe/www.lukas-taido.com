@@ -4,6 +4,7 @@ import styled from "styled-components";
 import SlateContent from "../components/SlateContent";
 import { contentPadding } from "../styles/contentPadding";
 import { CVItem } from "../types";
+import { pagePaddingBottom } from "../styles/pagePadding";
 
 interface Props {
   cv: CVItem[];
@@ -45,6 +46,7 @@ const Wrapper = styled.div`
   overflow: auto;
   display: flex;
   flex-direction: column;
+  ${pagePaddingBottom}
 `;
 const FullHeight = styled.div`
   position: relative;

@@ -14,8 +14,11 @@ export default function App({ Component, pageProps, router }: AppProps) {
   return (
     <Main className={inter.className} applyPadding={isNotLandingPage}>
       <Head>
-        <title>waveshaper</title>
-        <meta name="description" content="Lukas Taido" />
+        <title>Lukas Taido</title>
+        <meta
+          name="description"
+          content="Music / Audiovisual Concept Art / Immersive Audio"
+        />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

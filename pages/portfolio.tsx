@@ -139,15 +139,17 @@ export async function getServerSideProps() {
     fetchGlobal(),
   ]);
 
-  const projectsByTag = (projects.docs as Project[]).reduce((acc, project) => {
-    project.tags?.forEach((tag) => {
-      if (!acc[tag.id]) {
-        acc[tag.id] = [];
-      }
-      acc[tag.id].push(project);
-    });
-    return acc;
-  }, {} as Record<string, Project[]>);
+  const projectsByTag = (projects.docs as Project[])
+    .sort((a, b) => b.priority - a.priority)
+    .reduce((acc, project) => {
+      project.tags?.forEach((tag) => {
+        if (!acc[tag.id]) {
+          acc[tag.id] = [];
+        }
+        acc[tag.id].push(project);
+      });
+      return acc;
+    }, {} as Record<string, Project[]>);
   return {
     props: {
       projectsByTag,

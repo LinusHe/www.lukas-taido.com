@@ -65,6 +65,7 @@ export interface Press {
   id: string;
   title: string;
   date: string;
+  publisher: string;
   thumbnail?: CMSImage;
   pdfDocument?: {
     id: string;

@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import FlipMove from "react-flip-move";
 import styled from "styled-components";
 import TagFilter, { CustomTag } from "../components/TagFilter";
@@ -31,6 +31,8 @@ const PortfolioPage: NextPage<Props> = ({
   const [showPress, setShowPress] = useState(false);
   const [selectedPressItem, setSelectedPressItem] = useState<Press | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [columnCount, setColumnCount] = useState(2);
+  const masonryRef = useRef<HTMLDivElement>(null);
 
   const pressTag: CustomTag = { id: "press", label: "Press" };
 
@@ -53,6 +55,29 @@ const PortfolioPage: NextPage<Props> = ({
     setIsModalOpen(false);
   };
 
+  // Calculate dynamic column count based on viewport width
+  useEffect(() => {
+    const calculateColumnCount = () => {
+      if (!masonryRef.current) return;
+
+      const containerWidth = masonryRef.current.offsetWidth;
+      const minColumnWidth = 250; // Same as projects grid
+      const gap = 24; // Approximate gap size
+
+      // Calculate how many columns can fit
+      const availableWidth = containerWidth - gap;
+      const calculatedColumns = Math.max(1, Math.floor(availableWidth / (minColumnWidth + gap)));
+
+      // Limit to reasonable range
+      const clampedColumns = Math.min(calculatedColumns, 6);
+      setColumnCount(clampedColumns);
+    };
+
+    calculateColumnCount();
+    window.addEventListener('resize', calculateColumnCount);
+    return () => window.removeEventListener('resize', calculateColumnCount);
+  }, [showPress]);
+
   // Determine what to display based on selection
   const projects = showPress ? [] : (tag ? projectsByTag[tag.id] : allProjects);
 
@@ -70,39 +95,63 @@ const PortfolioPage: NextPage<Props> = ({
         onSelectTag={handleTagSelect}
       />
 
-      <Grid>
-        {!showPress && projects.map((project) => (
-          <Link key={project.id} href={"/projects/" + project.id}>
-            <Teaser>
-              <Background
-                className="background"
-                imageUrl={
-                  CMS_URL +
-                  (project.teaserImage?.sizes.thumbnail.url ||
-                    project.teaserImage?.url!)
-                }
-              />
-              <div className="foreground">{project.title}</div>
-            </Teaser>
-          </Link>
-        ))}
+      {!showPress && (
+        <Grid>
+          {projects.map((project) => (
+            <Link key={project.id} href={"/projects/" + project.id}>
+              <Teaser>
+                <Background
+                  className="background"
+                  imageUrl={
+                    CMS_URL +
+                    (project.teaserImage?.sizes.thumbnail.url ||
+                      project.teaserImage?.url!)
+                  }
+                />
+                <div className="foreground">{project.title}</div>
+              </Teaser>
+            </Link>
+          ))}
+        </Grid>
+      )}
 
-        {showPress && pressItems.map((press) => (
-          <div key={press.id} onClick={() => handlePressItemClick(press)}>
-            <Teaser>
-              <Background
-                className="background"
-                imageUrl={
-                  CMS_URL +
-                  (press.thumbnail?.sizes.thumbnail.url ||
-                    press.thumbnail?.url!)
-                }
-              />
-              <div className="foreground">{press.title}</div>
-            </Teaser>
-          </div>
-        ))}
-      </Grid>
+      {showPress && (
+        <MasonryGrid ref={masonryRef} columnCount={columnCount}>
+          {pressItems.map((press) => {
+            const aspectRatio = press.thumbnail?.width && press.thumbnail?.height
+              ? press.thumbnail.height / press.thumbnail.width
+              : 0.75;
+
+            const formatDate = (dateString: string) => {
+              const date = new Date(dateString);
+              return date.toLocaleDateString('de-DE', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              });
+            };
+
+            return (
+              <PressItemWithText key={press.id} onClick={() => handlePressItemClick(press)}>
+                <PressBackground
+                  className="background"
+                  imageUrl={
+                    CMS_URL + press.thumbnail?.url!
+                  }
+                  aspectRatio={aspectRatio}
+                />
+                <div className="foreground">
+                  <div className="title">{press.title}</div>
+                  <div className="meta">
+                    <div className="date">{formatDate(press.date)}</div>
+                    <div className="publisher">{press.publisher}</div>
+                  </div>
+                </div>
+              </PressItemWithText>
+            );
+          })}
+        </MasonryGrid>
+      )}
 
       <PdfModal
         isOpen={isModalOpen}
@@ -142,12 +191,58 @@ const Grid = styled(FlipMove)`
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
 `;
+
+const MasonryGrid = styled.div<{ columnCount: number; }>`
+  ${contentPadding("s")};
+  column-count: ${({ columnCount }) => columnCount};
+  column-gap: clamp(12px, 2.5vw, 24px);
+  
+  /* Ensure proper masonry behavior */
+  > * {
+    display: block;
+    break-inside: avoid;
+    margin-bottom: clamp(16px, 3vw, 32px);
+  }
+`;
+
 const Teaser = styled.div`
   position: relative;
   outline: 1px solid grey;
   cursor: pointer;
   overflow: hidden;
   padding-top: 56.66%;
+  break-inside: avoid;
+  margin-bottom: clamp(12px, 2.5vw, 24px);
+
+  > .foreground {
+    color: white;
+    position: absolute;
+    font-size: 1em;
+    opacity: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    padding: 8px;
+    transition: opacity 0.5s;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  :hover {
+    > .background {
+      transform: scale(1.25);
+    }
+    > .foreground {
+      opacity: 1;
+    }
+  }
+`;
+
+const PressItem = styled.div`
+  position: relative;
+  outline: 1px solid grey;
+  cursor: pointer;
+  overflow: hidden;
+  display: block;
 
   > .foreground {
     color: white;
@@ -171,6 +266,62 @@ const Teaser = styled.div`
     }
   }
 `;
+
+const PressItemWithText = styled.div`
+  position: relative;
+  outline: 1px solid grey;
+  cursor: pointer;
+  overflow: hidden;
+  display: block;
+
+  > .background {
+    transition: transform 1s;
+  }
+
+  > .foreground {
+    color: white;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px;
+    background-color: rgba(0, 0, 0, 0.8);
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+
+    .title {
+      font-size: 1em;
+      margin-bottom: 4px;
+    }
+
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .date {
+      font-size: 0.9em;
+      opacity: 0.8;
+    }
+
+    .publisher {
+      font-size: 0.9em;
+      opacity: 0.8;
+      text-align: right;
+      flex-shrink: 0;
+    }
+  }
+
+  :hover {
+    > .background {
+      transform: scale(1.1);
+    }
+  }
+`;
+
 const Background = styled.div<{ imageUrl: string; }>`
   position: absolute;
   top: 0;
@@ -180,9 +331,21 @@ const Background = styled.div<{ imageUrl: string; }>`
   background-image: url("${({ imageUrl }) => imageUrl}");
   background-size: cover;
   background-position: center;
-  background-repeat: none;
+  background-repeat: no-repeat;
   transition: transform 1s;
 `;
+
+const PressBackground = styled.div<{ imageUrl: string; aspectRatio: number; }>`
+  width: 100%;
+  height: 0;
+  padding-bottom: ${({ aspectRatio }) => aspectRatio * 100}%;
+  background-image: url("${({ imageUrl }) => imageUrl}");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: transform 1s;
+`;
+
 export async function getServerSideProps() {
   const fetchProjects = async () => {
     const url = `${CMS_URL}/api/projects?limit=1000`;

@@ -194,11 +194,12 @@ const PdfModal: React.FC<PdfModalProps> = ({ isOpen, onClose, pressItem, cmsUrl 
       <PDFContainer onClick={handleOverlayClick} role="dialog" aria-modal="true" aria-label={documentTitle}>
         {pdfDoc && (
           <>
+            {!contentLoaded && <Loader>Loading PDF...</Loader>}
             <AnimatedContent className={contentLoaded ? 'loaded' : ''}>
               <Document
                 file={`${cmsUrl}${pdfDoc.url}`}
                 onLoadSuccess={onDocumentLoadSuccess}
-                loading={<Loader>Loading PDF...</Loader>}
+                loading={null}
                 error={<div role="alert">Failed to load PDF. Please try again later.</div>}
                 inputRef={(ref) => {
                   if (ref) {
@@ -352,6 +353,7 @@ const AnimatedContent = styled.div`
   transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1), transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
   transition-delay: 100ms;
   will-change: opacity, transform;
+  position: relative;
 
   &.loaded {
     opacity: 1;

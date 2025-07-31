@@ -67,11 +67,13 @@ export interface Press {
   date: string;
   publisher: string;
   thumbnail?: CMSImage;
+  pressType: 'pdf' | 'video';
   pdfDocument?: {
     id: string;
     filename: string;
     url: string;
   };
+  videoUrl?: string;
   priority: number;
   createdAt: string;
   updatedAt: string;

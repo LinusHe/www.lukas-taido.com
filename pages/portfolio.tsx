@@ -9,6 +9,7 @@ import type { Global, Project, Press, Tag } from "../types";
 import Footer from "../components/Footer";
 import { pagePaddingBottom } from "../styles/pagePadding";
 import PdfModal from "../components/PdfModal";
+import VideoModal from "../components/VideoModal";
 
 const CMS_URL = process.env.NEXT_PUBLIC_CMS_URL;
 
@@ -30,7 +31,8 @@ const PortfolioPage: NextPage<Props> = ({
   );
   const [showPress, setShowPress] = useState(false);
   const [selectedPressItem, setSelectedPressItem] = useState<Press | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [columnCount, setColumnCount] = useState(2);
   const masonryRef = useRef<HTMLDivElement>(null);
 
@@ -48,11 +50,19 @@ const PortfolioPage: NextPage<Props> = ({
 
   const handlePressItemClick = (pressItem: Press) => {
     setSelectedPressItem(pressItem);
-    setIsModalOpen(true);
+    if (pressItem.pressType === 'video') {
+      setIsVideoModalOpen(true);
+    } else {
+      setIsPdfModalOpen(true);
+    }
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  const handleClosePdfModal = () => {
+    setIsPdfModalOpen(false);
+  };
+
+  const handleCloseVideoModal = () => {
+    setIsVideoModalOpen(false);
   };
 
   // Calculate dynamic column count based on viewport width
@@ -171,6 +181,9 @@ const PortfolioPage: NextPage<Props> = ({
                   }
                   aspectRatio={aspectRatio}
                 />
+                {press.pressType === 'video' && (
+                  <PlayIcon src="/btn-play.svg" alt="Play video" />
+                )}
                 <div className="foreground">
                   <div className="title">{press.title}</div>
                   <div className="meta">
@@ -185,10 +198,16 @@ const PortfolioPage: NextPage<Props> = ({
       )}
 
       <PdfModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
+        isOpen={isPdfModalOpen}
+        onClose={handleClosePdfModal}
         pressItem={selectedPressItem}
         cmsUrl={CMS_URL || ''}
+      />
+
+      <VideoModal
+        isOpen={isVideoModalOpen}
+        onClose={handleCloseVideoModal}
+        pressItem={selectedPressItem}
       />
 
       <Footer />
@@ -375,6 +394,23 @@ const PressBackground = styled.div<{ imageUrl: string; aspectRatio: number; }>`
   background-position: center;
   background-repeat: no-repeat;
   transition: transform 1s;
+`;
+
+const PlayIcon = styled.img`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  z-index: 2;
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+
+  ${PressItemWithText}:hover & {
+    opacity: 1;
+  }
 `;
 
 export async function getServerSideProps() {

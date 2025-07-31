@@ -131,12 +131,43 @@ const PortfolioPage: NextPage<Props> = ({
               });
             };
 
+            // Generate optimized thumbnail URL with same aspect ratio
+            const getOptimizedThumbnailUrl = (originalUrl: string, width: number, height: number) => {
+              const maxWidth = 400; // Maximum width for thumbnails
+              const maxHeight = 600; // Maximum height for thumbnails
+
+              // Calculate new dimensions maintaining aspect ratio
+              let newWidth = width;
+              let newHeight = height;
+
+              if (width > maxWidth) {
+                newWidth = maxWidth;
+                newHeight = Math.round((height * maxWidth) / width);
+              }
+
+              if (newHeight > maxHeight) {
+                newHeight = maxHeight;
+                newWidth = Math.round((width * maxHeight) / height);
+              }
+
+              // Add Payload CMS resize parameters
+              return `${originalUrl}?width=${newWidth}&height=${newHeight}&fit=cover`;
+            };
+
+            const optimizedImageUrl = press.thumbnail?.url
+              ? getOptimizedThumbnailUrl(
+                press.thumbnail.url,
+                press.thumbnail.width || 400,
+                press.thumbnail.height || 300
+              )
+              : '';
+
             return (
               <PressItemWithText key={press.id} onClick={() => handlePressItemClick(press)}>
                 <PressBackground
                   className="background"
                   imageUrl={
-                    CMS_URL + press.thumbnail?.url!
+                    CMS_URL + optimizedImageUrl
                   }
                   aspectRatio={aspectRatio}
                 />

@@ -11,6 +11,11 @@ const nextConfig = {
         hostname: "cms.lukas-taido.com",
         pathname: "/media/**",
       },
+      {
+        protocol: "https",
+        hostname: "cms.lukas-taido.com",
+        pathname: "/documents/**",
+      }
     ],
   },
 };

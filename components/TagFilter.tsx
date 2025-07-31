@@ -3,10 +3,16 @@ import styled from "styled-components";
 import { contentPadding } from "../styles/contentPadding";
 import { Tag } from "../types";
 
+// Extended tag interface to allow for custom tags that aren't full Tag objects
+export interface CustomTag {
+  id: string;
+  label: string;
+}
+
 interface Props extends HTMLAttributes<HTMLDivElement> {
-  active?: Tag;
-  tags?: Tag[];
-  onSelectTag: (tag: Tag) => void;
+  active?: Tag | CustomTag;
+  tags?: (Tag | CustomTag)[];
+  onSelectTag: (tag: Tag | CustomTag) => void;
 }
 
 const TagFilter: React.FC<Props> = (props) => {

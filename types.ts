@@ -61,6 +61,20 @@ export interface Project {
   createdAt: string;
   updatedAt: string;
 }
+export interface Press {
+  id: string;
+  title: string;
+  date: string;
+  thumbnail?: CMSImage;
+  pdfDocument?: {
+    id: string;
+    filename: string;
+    url: string;
+  };
+  priority: number;
+  createdAt: string;
+  updatedAt: string;
+}
 export interface Global {
   createdAt: string;
   updatedAt: string;

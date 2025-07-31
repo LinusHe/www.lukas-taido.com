@@ -81,7 +81,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, pressItem }) =
       <VideoWrapper aspectRatio={aspectRatio}>
         <VideoFallback>
           <p>Loading video...</p>
-          <p>If the video doesn't appear, click <a href={pressItem.videoUrl} target="_blank" rel="noopener noreferrer">here</a> to open it directly.</p>
+          <p>If the video doesn&apos;t appear, click <a href={pressItem.videoUrl} target="_blank" rel="noopener noreferrer">here</a> to open it directly.</p>
         </VideoFallback>
         <iframe
           src={embedUrl}

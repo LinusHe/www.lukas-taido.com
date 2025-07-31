@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Project } from "../../types";
 import { GetServerSidePropsContext } from "next";
+import Image from "next/image";
 import SlateContent from "../../components/SlateContent";
 import { contentPadding } from "../../styles/contentPadding";
 
@@ -37,7 +38,13 @@ export default function ProjectPage({ project }: Props) {
           })}
           {images?.map(({ image, caption }, index) => (
             <div key={"image-" + (index + 1)}>
-              <img src={CMS_URL + (image.sizes.tablet.url || image.url)} />
+              <Image
+                src={CMS_URL + (image.sizes.tablet.url || image.url)}
+                alt={caption || `Project image ${index + 1}`}
+                width={800}
+                height={600}
+                style={{ width: '100%', height: 'auto' }}
+              />
               {caption && <Caption>{caption}</Caption>}
             </div>
           ))}

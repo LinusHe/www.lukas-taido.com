@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, ReactElement } from "react";
+import React, { useState, useEffect, useRef, ReactElement, useCallback } from "react";
 import styled from "styled-components";
 
 interface GridProps {
@@ -10,7 +10,7 @@ interface GridProps {
   minColumns: number;
 }
 
-const GridContainer = styled.div<{ columnWidth: number; gridGutter: number }>`
+const GridContainer = styled.div<{ columnWidth: number; gridGutter: number; }>`
   display: grid;
   grid-template-columns: repeat(
     auto-fill,
@@ -33,9 +33,9 @@ const AspectRatioGrid: React.FC<GridProps> = ({
   minColumns,
 }) => {
   const [columnWidth, setColumnWidth] = useState(minCellWidth);
-  const gridItemsRef = useRef<{ [key: string]: HTMLElement }>({});
+  const gridItemsRef = useRef<{ [key: string]: HTMLElement; }>({});
 
-  const updateColumnWidth = () => {
+  const updateColumnWidth = useCallback(() => {
     const containerWidth = window.innerWidth;
     const numColumns = Math.max(
       minColumns,
@@ -43,10 +43,10 @@ const AspectRatioGrid: React.FC<GridProps> = ({
     );
     const newColumnWidth = Math.min(maxCellWidth, containerWidth / numColumns);
     setColumnWidth(newColumnWidth);
-  };
+  }, [minColumns, minCellWidth, maxCellWidth]);
 
   const getPositionData = () => {
-    const positions: { [key: string]: { top: number; left: number } } = {};
+    const positions: { [key: string]: { top: number; left: number; }; } = {};
 
     for (const key in gridItemsRef.current) {
       const element = gridItemsRef.current[key];
@@ -79,11 +79,11 @@ const AspectRatioGrid: React.FC<GridProps> = ({
     }
   };
 
-  const handleResize = () => {
+  const handleResize = useCallback(() => {
     const oldPositions = getPositionData();
     updateColumnWidth();
     requestAnimationFrame(() => animateItems(oldPositions));
-  };
+  }, [updateColumnWidth]);
 
   useEffect(() => {
     updateColumnWidth();
@@ -92,7 +92,7 @@ const AspectRatioGrid: React.FC<GridProps> = ({
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [handleResize, updateColumnWidth]);
 
   return (
     <GridContainer columnWidth={columnWidth} gridGutter={gridGutter}>

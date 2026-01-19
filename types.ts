@@ -56,6 +56,7 @@ export interface Project {
   images: {
     image: CMSImage;
     caption: string;
+    maxWidth?: number;
     id: string;
   }[];
   createdAt: string;

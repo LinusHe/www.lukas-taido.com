@@ -36,8 +36,8 @@ export default function ProjectPage({ project }: Props) {
               </VideoContainer>
             );
           })}
-          {images?.map(({ image, caption }, index) => (
-            <div key={"image-" + (index + 1)}>
+          {images?.map(({ image, caption, maxWidth }, index) => (
+            <ImageContainer key={"image-" + (index + 1)} $maxWidth={maxWidth}>
               <Image
                 src={CMS_URL + (image.sizes.tablet.url || image.url)}
                 alt={caption || `Project image ${index + 1}`}
@@ -46,7 +46,7 @@ export default function ProjectPage({ project }: Props) {
                 style={{ width: '100%', height: 'auto' }}
               />
               {caption && <Caption>{caption}</Caption>}
-            </div>
+            </ImageContainer>
           ))}
         </MediaGrid>
       )}
@@ -104,6 +104,13 @@ const MediaGrid = styled.div`
   @media only screen and (min-width: 551px) {
     grid-template-columns: 1fr 1fr;
   }
+`;
+const ImageContainer = styled.div<{ $maxWidth?: number }>`
+  ${({ $maxWidth }) => $maxWidth && `
+    max-width: ${$maxWidth}px;
+    margin-left: auto;
+    margin-right: auto;
+  `}
 `;
 const CMS_URL = process.env.NEXT_PUBLIC_CMS_URL;
 

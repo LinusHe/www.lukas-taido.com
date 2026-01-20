@@ -1,15 +1,33 @@
 import styled from "styled-components";
+import { useState } from "react";
 import { Project } from "../../types";
 import { GetServerSidePropsContext } from "next";
 import Image from "next/image";
 import SlateContent from "../../components/SlateContent";
 import { contentPadding } from "../../styles/contentPadding";
+import ImageLightbox from "../../components/ImageLightbox";
+
+const CMS_URL = process.env.NEXT_PUBLIC_CMS_URL;
 
 interface Props {
   project: Project;
 }
 export default function ProjectPage({ project }: Props) {
   const { content, title, images, videos } = project;
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
+  // Prepare images for lightbox (full size)
+  const lightboxImages = images?.map(({ image, caption }, index) => ({
+    src: CMS_URL + image.url,
+    alt: caption || `Project image ${index + 1}`,
+    caption: caption,
+  })) || [];
+
+  const openLightbox = (index: number) => {
+    setLightboxIndex(index);
+    setLightboxOpen(true);
+  };
 
   return (
     <Wrapper>
@@ -37,7 +55,11 @@ export default function ProjectPage({ project }: Props) {
             );
           })}
           {images?.map(({ image, caption, maxWidth }, index) => (
-            <ImageContainer key={"image-" + (index + 1)} $maxWidth={maxWidth}>
+            <ImageContainer
+              key={"image-" + (index + 1)}
+              $maxWidth={maxWidth}
+              onClick={() => openLightbox(index)}
+            >
               <Image
                 src={CMS_URL + (image.sizes.tablet.url || image.url)}
                 alt={caption || `Project image ${index + 1}`}
@@ -50,6 +72,14 @@ export default function ProjectPage({ project }: Props) {
           ))}
         </MediaGrid>
       )}
+
+      <ImageLightbox
+        isOpen={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+        images={lightboxImages}
+        currentIndex={lightboxIndex}
+        onNavigate={setLightboxIndex}
+      />
     </Wrapper>
   );
 }
@@ -106,13 +136,19 @@ const MediaGrid = styled.div`
   }
 `;
 const ImageContainer = styled.div<{ $maxWidth?: number }>`
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.85;
+  }
+
   ${({ $maxWidth }) => $maxWidth && `
     max-width: ${$maxWidth}px;
     margin-left: auto;
     margin-right: auto;
   `}
 `;
-const CMS_URL = process.env.NEXT_PUBLIC_CMS_URL;
 
 export async function getServerSideProps({ query }: GetServerSidePropsContext) {
   const { id } = query;
